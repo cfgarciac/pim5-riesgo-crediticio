@@ -16,3 +16,7 @@ uvicorn[standard]
 matplotlib
 scipy
 statsmodels
+lightgbm
+optuna
+joblib
+pyarrow
