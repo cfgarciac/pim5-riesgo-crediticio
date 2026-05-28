@@ -1,5 +1,7 @@
 # Modelo de Riesgo Crediticio - Proyecto Integrador Módulo 5
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=cfgarciac_pim5-riesgo-crediticio&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=cfgarciac_pim5-riesgo-crediticio)
+
 Sistema de Machine Learning para predecir el comportamiento de pago de
 clientes de una entidad financiera, desarrollado bajo un enfoque de MLOps
 que cubre el ciclo completo: análisis exploratorio, ingeniería de
@@ -20,9 +22,10 @@ drift, y despliegue mediante una API y un dashboard interactivo.
 5. [Hallazgos clave](#hallazgos-clave)
 6. [Resultados del modelo](#resultados-del-modelo)
 7. [Instalación y uso](#instalación-y-uso)
-8. [Stack tecnológico](#stack-tecnológico)
-9. [Control de versiones](#control-de-versiones)
-10. [Autor](#autor)
+8. [Pruebas unitarias y análisis de calidad](#pruebas-unitarias-y-análisis-de-calidad)
+9. [Stack tecnológico](#stack-tecnológico)
+10. [Control de versiones](#control-de-versiones)
+11. [Autor](#autor)
 
 ---
 
@@ -320,6 +323,55 @@ ejecución local.
 
 ---
 
+## Pruebas unitarias y análisis de calidad
+
+El proyecto cuenta con una suite de pruebas unitarias desarrollada con
+**pytest** que valida el comportamiento de las funciones clave de
+ingeniería de características y de monitoreo de drift. Las pruebas se
+ubican en el directorio `tests/` y se ejecutan automáticamente en cada
+push mediante GitHub Actions.
+
+### Ejecución local de las pruebas
+
+Desde la raíz del proyecto, con el entorno virtual activado:
+
+```bash
+# Instalar dependencias de desarrollo
+pip install -r requirements-dev.txt
+
+# Ejecutar todas las pruebas
+python -m pytest tests/ -v
+
+# Ejecutar las pruebas y medir cobertura de código
+python -m pytest tests/ --cov=ft_engineering --cov=model_monitoring --cov-report=term
+```
+
+### Análisis automático con SonarCloud
+
+El repositorio está integrado con [SonarCloud](https://sonarcloud.io),
+una plataforma de análisis estático que evalúa cuatro dimensiones de la
+calidad del código:
+
+- **Confiabilidad (Reliability):** detección de bugs potenciales.
+- **Seguridad (Security):** identificación de vulnerabilidades y puntos
+  débiles que podrían ser explotados.
+- **Cobertura de pruebas (Coverage):** porcentaje del código ejercitado
+  por las pruebas unitarias.
+- **Mantenibilidad (Maintainability):** evaluación del estilo, la
+  duplicación, la complejidad y los antipatrones (code smells).
+
+El análisis se ejecuta de forma automática en cada push a las ramas
+principales (`developer`, `certification`, `master`) mediante el workflow
+`.github/workflows/sonarcloud.yml`, que ejecuta las pruebas, genera el
+reporte de cobertura en formato XML y lo envía a SonarCloud junto con el
+análisis del código fuente.
+
+Los resultados del análisis se pueden consultar en el dashboard público
+del proyecto en SonarCloud, accesible mediante el badge de la parte
+superior de este README.
+
+---
+
 ## Stack tecnológico
 
 - **Lenguaje:** Python
@@ -333,6 +385,8 @@ ejecución local.
 - **API:** FastAPI, uvicorn
 - **Contenerización:** Docker
 - **Control de versiones:** Git, GitHub
+- **Pruebas:** pytest, pytest-cov
+- **Análisis de calidad:** SonarCloud, GitHub Actions
 
 ---
 
@@ -351,6 +405,7 @@ El proyecto sigue un esquema de tres ramas (`developer`, `certification`,
 | V1.4.0 | Dashboard interactivo en Streamlit |
 | V1.5.0 | Documentación completa (README) |
 | V1.6.0 | Despliegue con API FastAPI y Docker |
+| V1.7.0 | Pruebas unitarias y análisis SonarCloud |
 
 El flujo de trabajo desarrolla en `developer`, integra en `certification` y
 libera en `master` mediante merges sin fast-forward, con commits siguiendo la
