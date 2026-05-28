@@ -1,0 +1,6 @@
+{
+  "threshold_optimo": 0.49,
+  "threshold_default": 0.5,
+  "costo_impago_no_detectado": 20,
+  "costo_buen_cliente_rechazado": 1
+}
