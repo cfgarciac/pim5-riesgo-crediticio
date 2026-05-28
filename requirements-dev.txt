@@ -1,0 +1,10 @@
+# Dependencias de desarrollo y testing.
+# Instalar con:
+#     pip install -r requirements-dev.txt
+#
+# Este archivo es independiente de requirements.txt (que contiene solo las
+# dependencias de runtime), siguiendo la separación estándar de
+# entornos de produccion y desarrollo.
+
+pytest
+pytest-cov
