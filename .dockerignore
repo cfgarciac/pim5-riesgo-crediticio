@@ -1,0 +1,49 @@
+# =========================================================================
+# .dockerignore - Archivos y carpetas excluidos de la imagen Docker
+# =========================================================================
+# Reduce el tamaño de la imagen y acelera la construcción excluyendo
+# todo lo que la API no necesita en tiempo de ejecución.
+
+# Entorno virtual
+pim5-venv/
+*-venv/
+venv/
+.venv/
+
+# Control de versiones
+.git/
+.gitignore
+
+# Notebooks (la API no los usa)
+*.ipynb
+.ipynb_checkpoints/
+
+# Reportes visuales (PNG, CSV) - no necesarios para servir el modelo
+reports/
+
+# Dashboard (no se sirve desde la API)
+streamlit_app.py
+
+# Dataset original (la API recibe datos por request, no lo necesita)
+Base_de_datos.xlsx
+
+# Documentación
+*.md
+
+# Caché de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Configuración de editores
+.vscode/
+.idea/
+
+# Archivos de Docker (no se copian a sí mismos)
+Dockerfile
+.dockerignore

@@ -149,8 +149,10 @@ de negocio.
   (Population Stability Index), prueba de Kolmogorov-Smirnov y Chi-cuadrado.
 - **Dashboard** (`streamlit_app.py`): aplicación interactiva para predicción,
   visualización de drift y métricas del modelo.
-- **API** (`model_deploy.py`): despliegue del modelo mediante FastAPI
-  (ver Avance #4).
+- **API** (`model_deploy.py`): despliegue del modelo mediante FastAPI,
+  con un endpoint de predicción y documentación interactiva automática.
+  La aplicación se empaqueta en un contenedor Docker para garantizar un
+  entorno de ejecución reproducible.
 
 ---
 
@@ -284,6 +286,38 @@ streamlit run streamlit_app.py
 
 Se abrirá en el navegador (por defecto, `http://localhost:8501`).
 
+### 6. Ejecutar la API (FastAPI)
+
+```bash
+uvicorn mlops_pipeline.src.model_deploy:app --reload
+```
+
+La API quedará disponible en `http://localhost:8000`. La documentación
+interactiva está en `http://localhost:8000/docs`, donde se puede probar el
+endpoint de predicción directamente.
+
+Endpoints principales:
+
+- `GET /health`: verifica que la API y los artefactos están cargados.
+- `POST /predict`: recibe los datos de un cliente (JSON) y devuelve la
+  probabilidad de pago y la decisión.
+
+### 7. Ejecutar con Docker
+
+Para un entorno completamente reproducible, la API se puede ejecutar en un
+contenedor Docker. Desde la raíz del proyecto:
+
+```bash
+# Construir la imagen
+docker build -t riesgo-crediticio-api .
+
+# Ejecutar el contenedor
+docker run -p 8000:8000 riesgo-crediticio-api
+```
+
+La API quedará disponible en `http://localhost:8000` igual que en la
+ejecución local.
+
 ---
 
 ## Stack tecnológico
@@ -296,7 +330,8 @@ Se abrirá en el navegador (por defecto, `http://localhost:8501`).
 - **Pruebas estadísticas:** scipy, statsmodels
 - **Persistencia:** joblib, pyarrow (Parquet)
 - **Dashboard:** Streamlit
-- **API:** FastAPI, uvicorn (Avance #4)
+- **API:** FastAPI, uvicorn
+- **Contenerización:** Docker
 - **Control de versiones:** Git, GitHub
 
 ---
@@ -314,6 +349,8 @@ El proyecto sigue un esquema de tres ramas (`developer`, `certification`,
 | V1.2.0 | Entrenamiento y evaluación de modelos |
 | V1.3.0 | Monitoreo de data drift |
 | V1.4.0 | Dashboard interactivo en Streamlit |
+| V1.5.0 | Documentación completa (README) |
+| V1.6.0 | Despliegue con API FastAPI y Docker |
 
 El flujo de trabajo desarrolla en `developer`, integra en `certification` y
 libera en `master` mediante merges sin fast-forward, con commits siguiendo la
