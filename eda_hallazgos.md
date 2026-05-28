@@ -194,4 +194,68 @@ no devuelve información del cliente.
 
 ---
 
-**Fecha de última actualización del EDA:** 2026-05-26
+## 7. Hallazgo crítico: Target Leakage en la variable 'puntaje'
+
+Durante la fase de modelado (Avance #2) se detectó un caso de **target leakage**
+(fuga de información del objetivo) en la variable `puntaje`.
+
+### 7.1 Síntoma
+
+Al entrenar los primeros modelos, los cuatro algoritmos alcanzaron un
+ROC-AUC de 1.0000 en validación cruzada. Un desempeño perfecto es una señal
+de alerta clásica de que alguna variable contiene información del target que
+no estaría disponible en un escenario real de predicción.
+
+### 7.2 Diagnóstico
+
+El análisis de correlación y separación de clases reveló:
+
+- `puntaje` presentaba una correlación de 0.92 con `Pago_atiempo`.
+- La variable separaba las clases de forma casi perfecta:
+  - Registros con `puntaje > 75` correspondían siempre a `Pago_atiempo = 1`.
+  - Registros con `puntaje <= 50` correspondían siempre a `Pago_atiempo = 0`.
+  - Para la clase 1 (paga), el valor se concentraba alrededor de 95.
+  - Para la clase 0 (no paga), el valor caía entre -17 y 62.
+
+Esto indica que `puntaje` es un score calculado **a posteriori** del
+comportamiento de pago (es decir, un resultado derivado de saber si el
+cliente pagó), y no una variable disponible al momento de evaluar una
+solicitud de crédito nueva.
+
+### 7.3 Verificación de exhaustividad
+
+Se revisaron todas las demás variables (numéricas y categóricas) para
+descartar más casos de leakage:
+
+- Ninguna otra variable superó una correlación de 0.13 con el target.
+- `puntaje_datacredito` (correlación 0.12) es el score crediticio externo
+  legítimo (tipo Datacredito), que SÍ se conoce antes de otorgar el crédito.
+  Se conserva en el modelo.
+- Las categorías con "100% de pago" en `tendencia_ingresos` correspondían al
+  ruido numérico de baja frecuencia ya identificado en el EDA (1 a 7
+  registros cada una), no a un patrón real. Se agrupan como OTROS.
+
+Conclusión: el único caso de leakage era `puntaje`.
+
+### 7.4 Corrección aplicada
+
+En `ft_engineering.py` se agregó la constante `COLS_EXCLUIR_LEAKAGE = ["puntaje"]`
+y la columna se incorporó a `COLS_DESCARTAR`, de modo que se elimina del
+pipeline antes del entrenamiento. El dataset pasó de 33 a 32 features y la
+correlación máxima con el target descendió a 0.124 (saldo_mora), un valor
+sano. Tras la corrección, los modelos arrojaron ROC-AUC realistas en el
+rango 0.65 a 0.72, coherentes con la dificultad intrínseca del problema.
+
+### 7.5 Lección aprendida
+
+Un desempeño perfecto o casi perfecto nunca debe celebrarse sin verificación.
+En problemas de riesgo crediticio es habitual que existan variables derivadas
+del resultado (scores internos, flags de comportamiento) que contaminan el
+entrenamiento. La validación contra el sentido de negocio (qué información
+existe realmente al momento de predecir) es tan importante como las métricas
+estadísticas.
+
+---
+
+---
+**Fecha de última actualización del EDA:** 2026-05-28

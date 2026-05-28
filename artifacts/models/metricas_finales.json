@@ -1,0 +1,64 @@
+{
+  "modelo_ganador": "LogisticRegression",
+  "hiperparametros": {
+    "C": 0.017309803839339444,
+    "penalty": "l2"
+  },
+  "threshold_optimo": 0.49,
+  "metricas_test_threshold_default": {
+    "accuracy": 0.6503,
+    "precision": 0.973,
+    "recall": 0.6509,
+    "f1": 0.78,
+    "roc_auc": 0.692,
+    "pr_auc": 0.9759,
+    "recall_clase_0": 0.6373,
+    "precision_clase_0": 0.0832
+  },
+  "tabla_comparativa": [
+    {
+      "modelo": "LogisticRegression",
+      "accuracy": 0.6493,
+      "precision": 0.9723,
+      "recall": 0.6504,
+      "f1": 0.7794,
+      "roc_auc": 0.6903,
+      "pr_auc": 0.9757,
+      "recall_clase_0": 0.6275,
+      "precision_clase_0": 0.0819
+    },
+    {
+      "modelo": "XGBoost",
+      "accuracy": 0.7952,
+      "precision": 0.9648,
+      "recall": 0.8147,
+      "f1": 0.8834,
+      "roc_auc": 0.6777,
+      "pr_auc": 0.9752,
+      "recall_clase_0": 0.402,
+      "precision_clase_0": 0.0974
+    },
+    {
+      "modelo": "RandomForest",
+      "accuracy": 0.9545,
+      "precision": 0.9552,
+      "recall": 0.999,
+      "f1": 0.9766,
+      "roc_auc": 0.6732,
+      "pr_auc": 0.9726,
+      "recall_clase_0": 0.0588,
+      "precision_clase_0": 0.75
+    },
+    {
+      "modelo": "LightGBM",
+      "accuracy": 0.738,
+      "precision": 0.9638,
+      "recall": 0.7533,
+      "f1": 0.8456,
+      "roc_auc": 0.6587,
+      "pr_auc": 0.972,
+      "recall_clase_0": 0.4314,
+      "precision_clase_0": 0.08
+    }
+  ]
+}
