@@ -92,9 +92,16 @@ VARIABLES_CON_ANOMALIAS = [
     "edad_cliente",
     "salario_cliente",
     "puntaje_datacredito",
-    "puntaje",
     "total_otros_prestamos",
 ]
+
+# Variables excluidas del modelo por TARGET LEAKAGE.
+# 'puntaje' presenta una correlación de ~0.92 con el target y separa las
+# clases de forma casi perfecta (puntaje>75 -> siempre paga; puntaje<=50 ->
+# nunca paga). Esto indica que es un score calculado A POSTERIORI del
+# comportamiento de pago, no una variable disponible al momento de evaluar
+# un crédito nuevo. Incluirla produciría un modelo inservible en producción.
+COLS_EXCLUIR_LEAKAGE = ["puntaje"]
 
 # Reglas de capping/NaN para cada variable con anomalías.
 # Cada entrada define:
@@ -116,10 +123,6 @@ REGLAS_ANOMALIAS = {
         # Valores >950 -> capear a 950.
         "lo": 1, "hi": 950,
         "accion_low": "nan", "accion_high": "cap",
-    },
-    "puntaje": {
-        "lo": 0, "hi": 100,
-        "accion_low": "cap", "accion_high": "cap",
     },
     "total_otros_prestamos": {
         "lo": 0, "hi": 500_000_000,
@@ -152,7 +155,6 @@ COLS_CONTINUAS_SESGADAS = [
 # Numéricas continuas sin asimetría alta: solo imputar + escalar.
 COLS_CONTINUAS_NORMALES = [
     "edad_cliente",
-    "puntaje",
     "puntaje_datacredito",
     "cant_creditosvigentes",
     "huella_consulta",
@@ -173,7 +175,9 @@ COLS_CATEGORICAS = [
 ]
 
 # Columnas a descartar del pipeline (no son features predictoras).
-COLS_DESCARTAR = ["fecha_prestamo"]
+# Columnas a descartar del pipeline (no son features predictoras).
+# Incluye la fecha (no es predictor directo) y las columnas con leakage.
+COLS_DESCARTAR = ["fecha_prestamo"] + COLS_EXCLUIR_LEAKAGE
 
 # Umbrales de configuración
 UMBRAL_SKEW_LOG = 2.0   # asimetría a partir de la cual aplicar log1p
